@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Franck-Hertz Experiment Virtual Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="sticky-nav">
+        <div class="nav-container">
+            <div class="logo">Franck-Hertz Lab</div>
+            <ul class="nav-links">
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#theory">Theory</a></li>
+                <li><a href="#setup">Setup</a></li>
+                <li><a href="#procedure">Procedure</a></li>
+                <li><a href="#simulation">Simulation</a></li>
+            </ul>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle Dark Mode">
+                <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            </button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Hero Section -->
+        <section id="hero" class="card hero-section">
+            <h1>Franck-Hertz Experiment Virtual Lab</h1>
+            <p class="subtitle">Interactive visualization of electron collisions and atomic energy levels.</p>
+            <a href="#simulation" class="btn btn-primary start-btn">Start Experiment</a>
+        </section>
+
+        <!-- Theory Section -->
+        <section id="theory" class="card">
+            <h2>Theory</h2>
+            <div class="content-block">
+                <p>According to Bohr atomic model (proposed by Niels Bohr in 1913) electrons in an atom can orbit the nucleus in certain orbits (known as “stationary orbits”). The model, in essence, indicated the presence of discrete electronic energy levels in atoms, which could be computed on the hypothesis that the angular momentum of the orbiting electrons was quantized. Moreover, electrons can only gain and lose energy by jumping from one allowed orbit to another, absorbing or emitting electromagnetic radiation with a frequency ν determined by the energy difference of the levels according to the relation:</p>
+                <p style="text-align: center; font-weight: 600; font-family: monospace; font-size: 1.1rem; margin: 1rem 0;">ΔE = E₂ − E₁ = hν &nbsp;&nbsp;&nbsp;&nbsp;(1)</p>
+                <p>It is then to be expected that transfer of energy to atomic electrons by any mechanism should be always in discrete amounts. One such mechanism of energy transfer is through inelastic scattering of low-energy electrons.</p>
+                <p>Franck and Hertz first attempted to verify these ideas in 1914. The Frank-Hertz tube in the present experimental set-up is a Tetrode filled with Argon.</p>
+                <p>The electrons emitted by filament can be accelerated by the potential V<sub>G2K</sub> between the cathode K and the grid G2. The grid G1 kept much closer to the filament is maintained at slightly positively voltage with respect to filament K. This enhances the thermoionic emission from filament. The grids are wire mesh and allow electrons to pass through. The plate A is maintained at a potential slightly negative with respect to the grid G2. In this experiment, the electron current is measured as a function of the accelerating voltage V<sub>G2K</sub>. As V<sub>G2K</sub> increases, the electron energy goes up and so the electrons can overcome the retarding potential V<sub>G2A</sub> to reach the plate A. This gives rise to a current in the ammeter, which initially increases. As the voltage further increases, the electron energy reaches the threshold value to excite the atom in its first allowed excited state. In doing so, the electrons lose energy and therefore the number of electrons reaching the plate decreases. This decrease is proportional to the number of inelastic collisions that have occurred. When V<sub>G2K</sub> is increased further and reaches value twice that of the first excitation potential, it is possible for an electron to excite an Ar atom halfway between the grids, lose all its energy, and then again gain enough energy to excite atoms and this lead to second dip in the current. The advantage of this type of configuration of potential is that the current dips are much more pronounced, and it’s easy to obtain fivefold or even larger multiplicity in the excitation potential.</p>
+            </div>
+        </section>
+
+        <!-- Setup Section -->
+        <section id="setup" class="card">
+            <h2>Experimental Setup</h2>
+            <div class="content-block">
+                <p>The apparatus consists of a glass tube filled with a low-pressure gas (e.g., Neon or Mercury) containing the following electrodes:</p>
+                <ul>
+                    <li><strong>Heated Cathode:</strong> The source that emits electrons through thermionic emission.</li>
+                    <li><strong>Accelerating Grid:</strong> A positively charged grid that accelerates the electrons emitted from the cathode.</li>
+                    <li><strong>Retarding Grid:</strong> A grid with a small negative potential relative to the accelerating grid, preventing low-energy electrons from reaching the collector.</li>
+                    <li><strong>Collector Electrode:</strong> Collects the electrons that surpass the retarding potential, measuring the resulting current.</li>
+                    <li><strong>Power Supply:</strong> Provides the variable accelerating voltage and the fixed filament voltage for the cathode.</li>
+                </ul>
+                <div class="diagram-placeholder">
+                    <span>Apparatus Diagram (Conceptual)</span>
+                    <div class="diagram-box">
+                        <div class="electrode source">Cathode</div>
+                        <div class="electrode spacer">... Gas Area ...</div>
+                        <div class="electrode grid">Acc. Grid</div>
+                        <div class="electrode grid">Retar. Grid</div>
+                        <div class="electrode col">Collector</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Procedure Section -->
+        <section id="procedure" class="card">
+            <h2>Procedure</h2>
+            <div class="content-block">
+                <ol>
+                    <li>Switch on the power supply.</li>
+                    <li>Heat the cathode using the filament voltage slider to start electron emission.</li>
+                    <li>Increase the accelerating voltage gradually.</li>
+                    <li>Observe electrons accelerating through the gas towards the collector.</li>
+                    <li>Notice when electrons gain enough energy to collide inelastically with gas atoms (visualized by flashes).</li>
+                    <li>Observe the corresponding energy loss and the reduction in the collector current.</li>
+                    <li>Record the observed accelerating voltage and collector current values in the table.</li>
+                    <li>Plot the graph of collector current vs. accelerating voltage to find the excitation potential.</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Simulation & Graph Section -->
+        <section id="simulation" class="interactive-layout">
+            <!-- Left Column: Simulation and Controls -->
+            <div class="left-col">
+                <div class="card simulation-card">
+                    <div class="sim-header">
+                        <h2>Simulation Environment</h2>
+                        <div class="current-meter">
+                            <span class="label">Collector Current</span>
+                            <div class="digi-display"><span id="currentValue">0.00</span> µA</div>
+                        </div>
+                    </div>
+                    
+                    <div class="canvas-container">
+                        <canvas id="simCanvas"></canvas>
+                        
+                        <div class="guided-step-box" id="guideBox">
+                            Step 1: Increase filament voltage to emit electrons.
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <div class="control-group">
+                            <label for="filamentVoltage">
+                                Filament Voltage: <span id="fvVal">0.0</span> V
+                                <span class="tooltip-icon" title="Heats the cathode to release electrons.">?</span>
+                            </label>
+                            <input type="range" id="filamentVoltage" min="0" max="6" step="0.1" value="0">
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="accelVoltage">
+                                Accelerating Voltage: <span id="avVal">0.0</span> V
+                                <span class="tooltip-icon" title="Voltage used to accelerate electrons toward the collector.">?</span>
+                            </label>
+                            <input type="range" id="accelVoltage" min="0" max="80" step="1" value="0">
+                        </div>
+                        
+                        <div class="button-group">
+                            <button id="startSimBtn" class="btn btn-secondary">Start Simulation</button>
+                            <button id="pauseSimBtn" class="btn btn-secondary">Pause</button>
+                            <button id="resetSimBtn" class="btn btn-danger">Reset</button>
+                            <button id="recordDataBtn" class="btn btn-primary" style="margin-left:auto;">Record Data Point</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column: Table & Graph -->
+            <div class="right-col">
+                <div class="card table-card">
+                    <h2>Observation Table</h2>
+                    <div class="table-wrapper">
+                        <table id="dataTable">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Accelerating Voltage (V)</th>
+                                    <th>Collector Current (µA)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Generated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-actions">
+                        <button id="plotGraphBtn" class="btn btn-primary">Plot Graph</button>
+                        <button id="exampleDataBtn" class="btn btn-secondary">Example Data</button>
+                        <button id="clearDataBtn" class="btn btn-danger">Clear</button>
+                    </div>
+                </div>
+                
+                <div class="card graph-card" style="margin-top: 1.5rem;">
+                    <h2>Current vs Voltage Graph</h2>
+                    <div class="chart-container">
+                        <canvas id="resultChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

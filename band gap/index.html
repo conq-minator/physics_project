@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Four-Probe Method Virtual Lab</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #1a1a2e; color: #fff; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .container { background: #16213e; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 90%; max-width: 800px; }
+        .bench { background: #0f3460; height: 150px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: center; align-items: flex-end; position: relative; border: 2px solid #533483; }
+        #sample { width: 100px; height: 20px; background: #95a5a6; border-radius: 3px; transition: background 0.3s; margin-bottom: 20px; }
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        button { padding: 10px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; transition: 0.3s; }
+        .btn-record { background: #e94560; color: white; }
+        .btn-graph { background: #00d2ff; color: white; opacity: 0.5; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #0f3460; }
+        th, td { border: 1px solid #533483; padding: 8px; text-align: center; }
+        canvas#analysisChart { background: white; border-radius: 10px; margin-top: 20px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Semiconductor Bandgap Analysis</h2>
+    
+    <div class="bench">
+        <div id="sample"></div>
+        <div style="position:absolute; top: 20px; font-size: 12px; color: #aaa;">FOUR-PROBE HEATING CHAMBER</div>
+    </div>
+
+    <div class="controls">
+        <div>
+            <label>Material:</label>
+            <select id="material">
+                <option value="0.67">Germanium (0.67 eV)</option>
+                <option value="1.12">Silicon (1.12 eV)</option>
+            </select>
+        </div>
+        <div>
+            <label>Temperature: <span id="tempVal">300</span> K</label>
+            <input type="range" id="tempSlider" min="300" max="650" value="300" style="width:100%">
+        </div>
+    </div>
+
+    <div style="text-align: center;">
+        <button class="btn-record" onclick="takeReading()">Take Reading</button>
+        <button id="graphBtn" class="btn-graph" onclick="showGraph()" disabled>Show Analysis Graph</button>
+    </div>
+
+    <table id="dataTable">
+        <thead>
+            <tr><th>T (K)</th><th>V (mV)</th><th>1000/T</th><th>ln(ρ)</th></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <canvas id="analysisChart"></canvas>
+    <div id="resultText" style="margin-top: 15px; font-weight: bold; color: #00d2ff;"></div>
+</div>
+
+<script>
+    const dataPoints = [];
+    const k = 8.617e-5;
+    const current = 0.002;
+
+    const tempSlider = document.getElementById('tempSlider');
+    const tempVal = document.getElementById('tempVal');
+    const sample = document.getElementById('sample');
+
+    tempSlider.oninput = function() {
+        tempVal.innerHTML = this.value;
+        // Visual heat effect
+        let red = Math.min(255, (this.value - 300) * 1.5);
+        sample.style.background = `rgb(${150 + red/2}, ${165 - red/2}, ${166 - red/2})`;
+    }
+
+    function takeReading() {
+        const T = parseInt(tempSlider.value);
+        const Eg = parseFloat(document.getElementById('material').value);
+        
+        // Physics Calculation
+        const noise = 0.998 + Math.random() * 0.004;
+        const rho = 0.01 * Math.exp(Eg / (2 * k * T)) * noise;
+        const V = ((rho * current) / (2 * Math.PI * 0.2)) * 1000;
+        
+        const invT = 1000 / T;
+        const lnRho = Math.log(rho);
+
+        dataPoints.push({ x: invT, y: lnRho });
+
+        // Update Table
+        const table = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+        const row = table.insertRow(0);
+        row.innerHTML = `<td>${T}</td><td>${V.toFixed(2)}</td><td>${invT.toFixed(3)}</td><td>${lnRho.toFixed(3)}</td>`;
+
+        if (dataPoints.length >= 10) {
+            const btn = document.getElementById('graphBtn');
+            btn.disabled = false;
+            btn.style.opacity = "1";
+        }
+    }
+
+    function showGraph() {
+        document.getElementById('analysisChart').style.display = 'block';
+        dataPoints.sort((a, b) => a.x - b.x);
+
+        // Simple Linear Regression for Eg
+        const n = dataPoints.length;
+        let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
+        dataPoints.forEach(p => {
+            sumX += p.x; sumY += p.y;
+            sumXY += p.x * p.y; sumXX += p.x * p.x;
+        });
+        const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+        const calculatedEg = Math.abs(slope * 2 * k * 1000);
+
+        document.getElementById('resultText').innerHTML = `Calculated Bandgap (Eg): ${calculatedEg.toFixed(4)} eV`;
+
+        // Create Chart
+        new Chart("analysisChart", {
+            type: "line",
+            data: {
+                datasets: [{
+                    label: "Experimental Data",
+                    pointRadius: 6,
+                    pointBackgroundColor: "red",
+                    borderColor: "#00d2ff",
+                    tension: 0.2,
+                    data: dataPoints
+                }]
+            },
+            options: {
+                scales: {
+            x: { 
+                type: 'linear',  
+                position: 'bottom',
+                title: { display: true, text: '1000 / T (K⁻¹)' } 
+            },
+            y: { 
+                title: { display: true, text: 'ln(ρ)' } 
+            }
+        }
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
