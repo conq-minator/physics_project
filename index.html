@@ -1,1 +1,303 @@
-<html></html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Virtual Laboratory</title>
+    <!-- Use Inter for reading text and Space Grotesk for headings -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            /* Deep dark tones and sci-fi/academic accents */
+            --bg-color: #050608;
+            --card-bg: #0c0e14;
+            --border-color: rgba(255, 255, 255, 0.05);
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --accent-primary: #00e5ff;
+            --accent-secondary: #8e2de2;
+            --accent-glow: rgba(0, 229, 255, 0.15);
+            --transition-speed: 0.35s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            /* Subtle background gradients for some depth */
+            background-image:
+                radial-gradient(circle at 10% 40%, rgba(0, 229, 255, 0.03), transparent 35%),
+                radial-gradient(circle at 90% 60%, rgba(142, 45, 226, 0.03), transparent 35%);
+        }
+
+        /* Header / Hero Section */
+        header {
+            text-align: center;
+            padding: 7rem 2rem 4rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+            /* Subtle text gradient to make title pop slightly */
+            background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 40px rgba(255, 255, 255, 0.03);
+            line-height: 1.2;
+        }
+
+        p.subtitle {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Main Content - Grid */
+        main {
+            flex: 1;
+            padding: 0 2rem 5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .experiments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            width: 100%;
+            max-width: 850px;
+        }
+
+        /* Card Design */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            border: 1px solid var(--border-color);
+            transition: all var(--transition-speed) ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            z-index: 1;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Hover Overlay Background */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.04), rgba(142, 45, 226, 0.02));
+            opacity: 0;
+            transition: opacity var(--transition-speed) ease;
+            z-index: -1;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(0, 229, 255, 0.25);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6),
+                0 0 20px var(--accent-glow);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: color var(--transition-speed) ease;
+        }
+
+        /* Small indicator dot acting as educational/data node */
+        .card h2::before {
+            content: '';
+            display: block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--text-secondary);
+            transition: all var(--transition-speed) ease;
+        }
+
+        .card:hover h2::before {
+            background-color: var(--accent-primary);
+            box-shadow: 0 0 12px var(--accent-primary);
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+            font-weight: 300;
+            margin-bottom: 2.5rem;
+            flex-grow: 1;
+            transition: color var(--transition-speed) ease;
+        }
+
+        .card:hover p {
+            color: #cbd5e1;
+        }
+
+        /* Launch Button Styling (appears purely styled since card itself is the link) */
+        .launch-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.8rem 1.2rem;
+            background-color: transparent;
+            color: var(--text-primary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: all var(--transition-speed) ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .card:hover .launch-btn {
+            color: var(--accent-primary);
+            background-color: rgba(0, 229, 255, 0.05);
+            border-color: rgba(0, 229, 255, 0.3);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.1);
+        }
+
+        .launch-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: transform var(--transition-speed) ease;
+            margin-left: 0.75rem;
+        }
+
+        .card:hover .launch-btn svg {
+            transform: translateX(4px);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            margin-top: auto;
+        }
+
+        footer p {
+            font-size: 0.85rem;
+            color: #475569;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            header {
+                padding: 5rem 1.5rem 3rem;
+            }
+
+            .card {
+                padding: 2rem 1.5rem;
+            }
+
+            .experiments-grid {
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Physics Virtual Laboratory</h1>
+        <p class="subtitle">Interactive simulations exploring important experiments in modern physics. Select an
+            experiment to begin.</p>
+    </header>
+
+    <main>
+        <div class="experiments-grid">
+
+            <!-- Experiment Card 1 -->
+            <a href="band gap/index.html" class="card">
+                <h2>Band Gap Experiment</h2>
+                <p>Explore semiconductor band structures and understand how energy gaps influence electrical
+                    conductivity.</p>
+                <div class="launch-btn">
+                    <span>Launch Experiment</span>
+                    <svg viewBox="0 0 24 24">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </div>
+            </a>
+
+            <!-- Experiment Card 2 -->
+            <a href="frank-hertz/index.html" class="card">
+                <h2>Franck-Hertz Experiment</h2>
+                <p>Observe quantized atomic energy levels through electron collisions with mercury vapor.</p>
+                <div class="launch-btn">
+                    <span>Launch Experiment</span>
+                    <svg viewBox="0 0 24 24">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>Virtual Physics Lab — Interactive Simulations for Learning</p>
+    </footer>
+
+</body>
+
+</html>

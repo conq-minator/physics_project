@@ -39,6 +39,7 @@ const recordDataBtn = document.getElementById('recordDataBtn');
 
 const simCanvas = document.getElementById('simCanvas');
 const simCtx = simCanvas.getContext('2d');
+const navbar = document.querySelector('.sticky-nav');
 
 // --- INITIALIZATION ---
 function init() {
@@ -47,6 +48,33 @@ function init() {
     setupEventListeners();
     initCanvas();
     initChart();
+    initSmartNav();
+}
+
+// --- SMART NAVIGATION ---
+function initSmartNav() {
+    let lastScrollTop = 0;
+    let scrollTimeout;
+
+    window.addEventListener('scroll', () => {
+        if (scrollTimeout) {
+            window.cancelAnimationFrame(scrollTimeout);
+        }
+
+        scrollTimeout = window.requestAnimationFrame(() => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // Only trigger hide logic if we've scrolled past the hero section a bit
+            // and we are scrolling down
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                navbar.classList.add('nav-hidden');
+            } else {
+                navbar.classList.remove('nav-hidden');
+            }
+            
+            lastScrollTop = Math.max(0, scrollTop); // Keep positive
+        });
+    }, { passive: true }); // passive: true optimization for smooth scrolling
 }
 
 // --- THEME MANAGEMENT ---
