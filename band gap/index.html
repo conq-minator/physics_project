@@ -3,151 +3,229 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Four-Probe Method Virtual Lab</title>
+    <title>Four Probe Method | Virtual Lab</title>
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #1a1a2e; color: #fff; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .container { background: #16213e; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 90%; max-width: 800px; }
-        .bench { background: #0f3460; height: 150px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: center; align-items: flex-end; position: relative; border: 2px solid #533483; }
-        #sample { width: 100px; height: 20px; background: #95a5a6; border-radius: 3px; transition: background 0.3s; margin-bottom: 20px; }
-        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-        button { padding: 10px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; transition: 0.3s; }
-        .btn-record { background: #e94560; color: white; }
-        .btn-graph { background: #00d2ff; color: white; opacity: 0.5; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #0f3460; }
-        th, td { border: 1px solid #533483; padding: 8px; text-align: center; }
-        canvas#analysisChart { background: white; border-radius: 10px; margin-top: 20px; display: none; }
-    </style>
 </head>
 <body>
 
-<div class="container">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <a href="../index.html" style="color: #00d2ff; text-decoration: none; font-weight: bold; font-size: 0.9em;">&larr; Lab Menu</a>
-    </div>
-    <h2 style="margin-top: 0;">Semiconductor Bandgap Analysis</h2>
-    
-    <div class="bench">
-        <div id="sample"></div>
-        <div style="position:absolute; top: 20px; font-size: 12px; color: #aaa;">FOUR-PROBE HEATING CHAMBER</div>
-    </div>
+    <nav class="sidebar">
+        <h1>Virtual Labs</h1>
+        <button class="nav-btn active" data-target="aim">Aim</button>
+        <button class="nav-btn" data-target="theory">Theory</button>
+        <button class="nav-btn" data-target="procedure">Procedure</button>
+        <button class="nav-btn" data-target="simulation">Simulation</button>
+    </nav>
 
-    <div class="controls">
-        <div>
-            <label>Material:</label>
-            <select id="material">
-                <option value="0.67">Germanium (0.67 eV)</option>
-                <option value="1.12">Silicon (1.12 eV)</option>
-            </select>
-        </div>
-        <div>
-            <label>Temperature: <span id="tempVal">300</span> K</label>
-            <input type="range" id="tempSlider" min="300" max="650" value="300" style="width:100%">
-        </div>
-    </div>
-
-    <div style="text-align: center;">
-        <button class="btn-record" onclick="takeReading()">Take Reading</button>
-        <button id="graphBtn" class="btn-graph" onclick="showGraph()" disabled>Show Analysis Graph</button>
-    </div>
-
-    <table id="dataTable">
-        <thead>
-            <tr><th>T (K)</th><th>V (mV)</th><th>1000/T</th><th>ln(ρ)</th></tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
-    <canvas id="analysisChart"></canvas>
-    <div id="resultText" style="margin-top: 15px; font-weight: bold; color: #00d2ff;"></div>
-</div>
-
-<script>
-    const dataPoints = [];
-    const k = 8.617e-5;
-    const current = 0.002;
-
-    const tempSlider = document.getElementById('tempSlider');
-    const tempVal = document.getElementById('tempVal');
-    const sample = document.getElementById('sample');
-
-    tempSlider.oninput = function() {
-        tempVal.innerHTML = this.value;
-        // Visual heat effect
-        let red = Math.min(255, (this.value - 300) * 1.5);
-        sample.style.background = `rgb(${150 + red/2}, ${165 - red/2}, ${166 - red/2})`;
-    }
-
-    function takeReading() {
-        const T = parseInt(tempSlider.value);
-        const Eg = parseFloat(document.getElementById('material').value);
+    <main class="main-content">
         
-        // Physics Calculation
-        const noise = 0.998 + Math.random() * 0.004;
-        const rho = 0.01 * Math.exp(Eg / (2 * k * T)) * noise;
-        const V = ((rho * current) / (2 * Math.PI * 0.2)) * 1000;
-        
-        const invT = 1000 / T;
-        const lnRho = Math.log(rho);
+        <section id="aim" class="section-content active">
+            <h2>Aim of the Experiment</h2>
+            <div class="doc-box">
+                <p>To systematically determine the energy bandgap (<strong>E<sub>g</sub></strong>) of semiconductor materials (Silicon and Germanium) by studying the variation of their resistivity with temperature using the <strong>Four Probe Method</strong>.</p>
+                
+                <h3>Apparatus & Equipment</h3>
+                <ul>
+                    <li><strong>Four Probe Arrangement:</strong> Four collinear, equally spaced spring-loaded probes to eliminate contact resistance errors.</li>
+                    <li><strong>Semiconductor Samples:</strong> High-purity Germanium (Ge) and Silicon (Si) crystal slices.</li>
+                    <li><strong>Oven Setup:</strong> A controlled heating enclosure capable of reaching 150&deg;C.</li>
+                    <li><strong>Constant Current Source:</strong> A precision power supply delivering a steady current (in mA).</li>
+                    <li><strong>Digital Millivoltmeter:</strong> To measure the potential difference across the inner probes.</li>
+                    <li><strong>Digital Thermometer:</strong> To monitor the absolute temperature of the sample.</li>
+                </ul>
 
-        dataPoints.push({ x: invT, y: lnRho });
+                <h3>Significance</h3>
+                <p>Understanding the bandgap is crucial in semiconductor physics and electrical engineering. It dictates how a material behaves at different temperatures, which is fundamental for designing diodes, transistors, and optoelectronic devices.</p>
+            </div>
+        </section>
 
-        // Update Table
-        const table = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
-        const row = table.insertRow(0);
-        row.innerHTML = `<td>${T}</td><td>${V.toFixed(2)}</td><td>${invT.toFixed(3)}</td><td>${lnRho.toFixed(3)}</td>`;
+        <section id="theory" class="section-content">
+            <h2>Theory and Mathematical Model</h2>
+            <div class="doc-box">
+                <h3>1. The Energy Bandgap (E<sub>g</sub>)</h3>
+                <p>In solid-state physics, the electrical conductivity of a semiconductor is determined by its band structure. The <strong>Valence Band</strong> contains electrons strictly bound to the crystal lattice, while the <strong>Conduction Band</strong> contains free electrons that contribute to electrical current. The void of forbidden energy levels between these two bands is the <strong>Energy Bandgap (E<sub>g</sub>)</strong>.</p>
+                <p>At absolute zero (0 K), an intrinsic semiconductor behaves as a perfect insulator. As the absolute temperature (<strong>T</strong>) increases, thermal energy excites electrons across the bandgap, creating electron-hole pairs. This drastically increases conductivity and, consequently, decreases the material's electrical resistivity (<strong>&rho;</strong>).</p>
+                
+                <h3>2. Temperature Dependence of Resistivity</h3>
+                <p>The intrinsic carrier concentration follows an exponential Maxwell-Boltzmann distribution. Since resistivity is inversely proportional to carrier concentration, the resistivity of an intrinsic semiconductor at a given temperature is defined by the relation:</p>
+                <div class="formula">
+                    &rho; = A &middot; exp [ E<sub>g</sub> / (2k<sub>B</sub>T) ]
+                </div>
+                <ul>
+                    <li><strong>&rho;</strong> = Resistivity of the semiconductor (&Omega;&middot;cm)</li>
+                    <li><strong>A</strong> = A constant depending on the specific geometry and material properties</li>
+                    <li><strong>E<sub>g</sub></strong> = Bandgap energy of the semiconductor (in electron-volts, eV)</li>
+                    <li><strong>k<sub>B</sub></strong> = Boltzmann constant (8.617 &times; 10<sup>-5</sup> eV/K)</li>
+                    <li><strong>T</strong> = Absolute temperature (in Kelvin)</li>
+                </ul>
 
-        if (dataPoints.length >= 10) {
-            const btn = document.getElementById('graphBtn');
-            btn.disabled = false;
-            btn.style.opacity = "1";
-        }
-    }
+                <h3>3. The Four Probe Principle</h3>
+                <p>Measuring the resistivity of a semiconductor using a standard two-terminal multimeter is highly inaccurate due to <strong>contact resistance</strong> and minority carrier injection at the boundary between the metal probes and the semiconductor surface. The Four Probe Method eliminates this fatal error.</p>
+                <p>A constant current (<strong>I</strong>) is forced through the two outer probes, while a high-impedance voltmeter measures the voltage drop (<strong>V</strong>) across the two inner probes. Because essentially zero current flows through the voltmeter circuit, contact resistance at the inner probes is completely negated. For a semiconductor slice of thickness <em>W</em> and probe spacing <em>S</em>, the precise resistivity is calculated as:</p>
+                <div class="formula">
+                    &rho; = (V / I) &times; 2&pi;S &times; G(W/S)
+                </div>
 
-    function showGraph() {
-        document.getElementById('analysisChart').style.display = 'block';
-        dataPoints.sort((a, b) => a.x - b.x);
+                <h3>4. Deriving the Arrhenius Plot</h3>
+                <p>To extract the bandgap experimentally without dealing with complex exponential curves, we linearize the resistivity equation by taking the base-10 logarithm on both sides:</p>
+                <div class="formula">
+                    log<sub>10</sub>(&rho;) = [ E<sub>g</sub> / (2.303 &times; 2k<sub>B</sub>) ] &times; (1 / T) + log<sub>10</sub>(A)
+                </div>
+                <p>By plotting <strong>log<sub>10</sub>(&rho;)</strong> on the Y-axis against <strong>10<sup>3</sup>/T</strong> on the X-axis, the resulting data forms a straight line (an Arrhenius Plot) with a distinct slope (<strong>m</strong>). We can then rearrange the slope formula to solve for the exact experimental Bandgap energy:</p>
+                <div class="formula">
+                    E<sub>g</sub> = m &times; 4.606 &times; k<sub>B</sub> &times; 10<sup>3</sup> (in eV)
+                </div>
+            </div>
+        </section>
 
-        // Simple Linear Regression for Eg
-        const n = dataPoints.length;
-        let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
-        dataPoints.forEach(p => {
-            sumX += p.x; sumY += p.y;
-            sumXY += p.x * p.y; sumXX += p.x * p.x;
-        });
-        const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
-        const calculatedEg = Math.abs(slope * 2 * k * 1000);
+        <section id="procedure" class="section-content">
+            <h2>Experimental Procedure</h2>
+            <div class="doc-box">
+                <h3>Phase 1: Initialization</h3>
+                <ol>
+                    <li>Navigate to the <strong>Simulation</strong> tab on the left dashboard.</li>
+                    <li>In the Control Deck, select your target <strong>Semiconductor Material</strong> (Germanium or Silicon). Notice the sample visual update accordingly.</li>
+                    <li>Click the <strong>System Power</strong> button to activate the constant current source and the digital displays.</li>
+                    <li>Adjust the <strong>Constant Current (I)</strong> slider to a standard testing value (e.g., 5.0 mA). <em>Leave this slider completely untouched for the remainder of the trial.</em></li>
+                </ol>
 
-        document.getElementById('resultText').innerHTML = `Calculated Bandgap (Eg): ${calculatedEg.toFixed(4)} eV`;
+                <h3>Phase 2: Data Collection</h3>
+                <ol start="5">
+                    <li>Observe the initial Voltage (mV) reading at room temperature (25&deg;C).</li>
+                    <li>Click the purple <strong>Record Reading</strong> button. The system will automatically calculate the resistivity (&rho;), 10&sup3;/T, and log&sub1;&sub0;(&rho;), logging it into the Observation Table.</li>
+                    <li>Slowly increase the <strong>Oven Temperature (T)</strong> slider in increments of roughly 10&deg;C to 15&deg;C.</li>
+                    <li>Watch the simulated oven glow increase and the voltage drop as thermal energy excites more electrons into the conduction band.</li>
+                    <li>At each new temperature interval, click <strong>Record Reading</strong>. Ensure you collect at least 5 distinct data points to establish a reliable trend line.</li>
+                </ol>
 
-        // Create Chart
-        new Chart("analysisChart", {
-            type: "line",
-            data: {
-                datasets: [{
-                    label: "Experimental Data",
-                    pointRadius: 6,
-                    pointBackgroundColor: "red",
-                    borderColor: "#00d2ff",
-                    tension: 0.2,
-                    data: dataPoints
-                }]
-            },
-            options: {
-                scales: {
-            x: { 
-                type: 'linear',  
-                position: 'bottom',
-                title: { display: true, text: '1000 / T (K⁻¹)' } 
-            },
-            y: { 
-                title: { display: true, text: 'ln(ρ)' } 
-            }
-        }
-            }
-        });
-    }
-</script>
+                <h3>Phase 3: Graphical Analysis & Calculation</h3>
+                <ol start="10">
+                    <li>Observe the <strong>Arrhenius Plot</strong> dynamically generating your data points, plotting log&sub1;&sub0;(&rho;) on the Y-axis against 10&sup3;/T on the X-axis.</li>
+                    <li>Once 5 points are recorded, the <strong>Calculate Bandgap</strong> button will unlock.</li>
+                    <li>Click it to command the simulation engine to perform a linear regression. The system will draw the line of best fit, calculate its slope, and output the final experimental Bandgap (E<sub>g</sub>) in eV.</li>
+                    <li>Compare your experimental result with the standard theoretical values (Ge &approx; 0.66 eV, Si &approx; 1.12 eV).</li>
+                </ol>
+            </div>
+        </section>
 
+        <section id="simulation" class="section-content">
+            <h2>Virtual Laboratory</h2>
+            
+            <div class="sim-wrapper">
+                
+                <div class="sim-top-row">
+                    
+                    <div class="sim-tools-left">
+                        <div class="panel">
+                            <div class="panel-title">Four Probe Apparatus</div>
+                            <div class="apparatus-box" id="apparatus-box">
+                                <div class="oven-element" id="oven-glow"></div>
+                                <div class="ge-sample" id="sample-visual">
+                                    <div class="probes">
+                                        <div class="probe"></div>
+                                        <div class="probe"></div>
+                                        <div class="probe"></div>
+                                        <div class="probe"></div>
+                                    </div>
+                                    <div class="ge-label" id="material-label">Germanium</div>
+                                </div>
+                            </div>
+
+                            <div class="displays">
+                                <div class="display-screen">
+                                    <span class="display-label">Voltmeter (mV)</span>
+                                    <span class="display-value" id="disp-voltage">00.00</span>
+                                </div>
+                                <div class="display-screen">
+                                    <span class="display-label">Ammeter (mA)</span>
+                                    <span class="display-value" id="disp-current">00.00</span>
+                                </div>
+                                <div class="display-screen">
+                                    <span class="display-label">Thermometer (&deg;C)</span>
+                                    <span class="display-value" id="disp-temp">25.0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel">
+                            <div class="panel-title">Control Deck</div>
+                            
+                            <div class="control-group">
+                                <label><span>Semiconductor Material</span></label>
+                                <div class="material-toggle">
+                                    <input type="radio" id="mat-ge" name="material" value="Ge" checked>
+                                    <label for="mat-ge">Germanium (Ge)</label>
+                                    
+                                    <input type="radio" id="mat-si" name="material" value="Si">
+                                    <label for="mat-si">Silicon (Si)</label>
+                                </div>
+                            </div>
+
+                            <button id="btn-power" class="btn-power">System Power: OFF</button>
+                            
+                            <div class="control-group">
+                                <label>
+                                    <span>Constant Current (I)</span>
+                                    <span id="label-current">5.0 mA</span>
+                                </label>
+                                <input type="range" id="slider-current" min="1" max="10" step="0.1" value="5" disabled>
+                            </div>
+
+                            <div class="control-group">
+                                <label>
+                                    <span>Oven Temperature (T)</span>
+                                    <span id="label-temp">25 &deg;C</span>
+                                </label>
+                                <input type="range" id="slider-temp" min="25" max="150" step="1" value="25" disabled>
+                            </div>
+
+                            <div class="action-buttons">
+                                <button id="btn-record" class="btn-record" disabled>Record Reading</button>
+                                <button id="btn-clear" class="btn-danger">Clear Data</button>
+                            </div>
+                            
+                            <button id="btn-calculate" class="btn-calc" disabled>Calculate Bandgap (Need 5 points)</button>
+
+                            <div id="result-box" class="result-box hidden">
+                                Calculated Bandgap (E<sub>g</sub>) = <strong id="final-eg">--</strong> <strong>eV</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel table-panel">
+                        <div class="panel-title">Observation Log</div>
+                        <div class="table-container">
+                            <table id="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>T (&deg;C)</th>
+                                        <th>T (K)</th>
+                                        <th>V (mV)</th>
+                                        <th>&rho; (&Omega;&middot;cm)</th>
+                                        <th>10&sup3;/T (K<sup>-1</sup>)</th>
+                                        <th>log&sub1;&sub0;(&rho;)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="panel graph-panel">
+                    <div class="panel-title">Arrhenius Plot</div>
+                    <div class="chart-container">
+                        <canvas id="bandgapChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script src="script.js" defer></script>
 </body>
 </html>
